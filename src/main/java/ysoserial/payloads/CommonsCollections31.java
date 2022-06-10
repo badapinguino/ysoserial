@@ -82,7 +82,6 @@ public class CommonsCollections31 extends PayloadRunner
         Flat3Map flat3Map2 = new Flat3Map();
         flat3Map2.put(tiedMapEntry2, 2);
 
-        // TODO: provare ad aggiungere uno step (metodo) alla volta partendo da uguale a CC10
         //lruMap.put(defaultedMap, "a");
         //lruMap.put(flat3Map1, "b");
         lruMap.put(flat3Map2, "a");
