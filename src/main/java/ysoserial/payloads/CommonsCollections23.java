@@ -38,7 +38,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"commons-collections:commons-collections:3.1"})
-@Authors({ Authors.NAVALORENZO })
+@Authors({ "BadagliaccaDaniele" })
 public class CommonsCollections23 extends PayloadRunner implements ObjectPayload<ReferenceMap> {
 
     public ReferenceMap getObject(final String command) throws Exception {

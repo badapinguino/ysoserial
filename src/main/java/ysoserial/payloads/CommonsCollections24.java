@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"org.apache.commons:commons-collections4:4.0"})
-@Authors({ Authors.NAVALORENZO })
+@Authors({ "BadagliaccaDaniele" })
 public class CommonsCollections24 extends PayloadRunner implements ObjectPayload<LRUMap> {
     enum ProvaEnum {
         zZ,

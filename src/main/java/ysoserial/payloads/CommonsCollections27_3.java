@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"commons-collections:commons-collections4:4.0"})
-@Authors({ Authors.NAVALORENZO })
+@Authors({ "BadagliaccaDaniele" })
 public class CommonsCollections27_3 extends PayloadRunner implements ObjectPayload<ReferenceMap> {
 
     public ReferenceMap getObject(final String command) throws Exception {

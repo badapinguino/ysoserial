@@ -34,7 +34,7 @@ import java.util.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"org.apache.commons:commons-collections4:4.0"})
-@Authors({ Authors.NAVALORENZO })
+@Authors({ "BadagliaccaDaniele" })
 public class CommonsCollections30 extends PayloadRunner implements ObjectPayload<Flat3Map> {
     enum ProvaEnum {
         zZ,

@@ -46,7 +46,7 @@ import java.util.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"org.apache.commons:commons-collections:3.1"})
-@Authors({Authors.FROHOFF})
+@Authors({"BadagliaccaDaniele"})
 public class CommonsCollections22_1 implements ObjectPayload<ReferenceMap> {
     public enum ProvaEnum {
         zZ,
