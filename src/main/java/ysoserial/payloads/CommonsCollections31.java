@@ -9,6 +9,7 @@ import org.apache.commons.collections4.keyvalue.TiedMapEntry;
 import org.apache.commons.collections4.map.DefaultedMap;
 import org.apache.commons.collections4.map.Flat3Map;
 import org.apache.commons.collections4.map.LRUMap;
+import ysoserial.payloads.annotation.Authors;
 import ysoserial.payloads.annotation.Dependencies;
 import ysoserial.payloads.util.Gadgets;
 import ysoserial.payloads.util.PayloadRunner;
@@ -39,6 +40,7 @@ import java.util.Map;
  */
 
 @Dependencies({ "org.apache.commons:commons-collections4:4.0" })
+@Authors({ "BadagliaccaDaniele" })
 public class CommonsCollections31 extends PayloadRunner
     implements ObjectPayload<LRUMap> {
 
