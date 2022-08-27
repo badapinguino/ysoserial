@@ -43,7 +43,7 @@ import java.util.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"org.apache.commons:commons-collections4:4.0"})
-@Authors({Authors.FROHOFF})
+@Authors({"BadagliaccaDaniele"})
 public class CommonsCollections21_1 implements ObjectPayload<ReferenceIdentityMap> {
 
     public ReferenceIdentityMap getObject(final String command) throws Exception {

@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Dependencies({"commons-collections:commons-collections4:4.0"})
-@Authors({ Authors.NAVALORENZO })
+@Authors({ "BadagliaccaDaniele" })
 public class CommonsCollections27 extends PayloadRunner implements ObjectPayload<ReferenceMap> {
     enum ProvaEnum {
         zZ,
